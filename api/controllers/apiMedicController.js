@@ -1,4 +1,13 @@
-let authToken = "abc123";
+let redis = require("redis"),
+    client = redis.createClient();
+
+client.on("error", function (err) {
+    console.log("Error " + err);
+});
+
+const {promisify} = require('util');
+const getAsync = promisify(client.get).bind(client);
+
 const baseURL = "https://sandbox-healthservice.priaid.ch/"
 let baseURLFor = (key, locationID, MWBG) => {
   let urls = { 
@@ -9,12 +18,13 @@ let baseURLFor = (key, locationID, MWBG) => {
   };
   return (urls[key])
 }
-let defaultQueryParams = "?language=en-gb&format=json&token=" + authToken
-let queryParams = (additionalParams) => {
-  return (additionalParams ? defaultQueryParams + additionalParams : defaultQueryParams)
+let defaultQueryParams = (token) => {
+  return "?language=en-gb&format=json&token=" + token
 }
 
-let wrap = require('async-middleware').wrap
+let queryParams = (token, additionalParams) => {
+  return (additionalParams ? defaultQueryParams(token) + additionalParams : defaultQueryParams(token))
+}
 
 let makeRequest = (url, res) => {
   let XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
@@ -36,9 +46,13 @@ let makeRequest = (url, res) => {
 }
 
 exports.sublocations = function(req, res) {
-  let fullURL = baseURLFor('sublocations', req.query.locationID) + queryParams();
-
-  makeRequest(fullURL, res)
+  getAsync("token").then(function(token) {
+    return (token || client.set("token", "abc123"));
+  }).then(function(token) {
+    return baseURLFor('sublocations', req.query.locationID) + queryParams(token);
+  }).then(function(fullURL) {
+    makeRequest(fullURL, res)
+  }).catch(err => {res.json({status: 500, response: err.message})})
 };
 
 exports.sublocation_symptoms = function(req, res) {
