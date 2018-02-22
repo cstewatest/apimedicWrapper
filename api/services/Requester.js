@@ -6,11 +6,9 @@ module.exports = function Requester() {
 
       request.open(method, url, false);
       request.onload = () => {
-        console.log('in on load')
         if (request.status >= 200 && request.status < 300) {
           resolve(request)
         } else {
-          console.log(request)
           reject(request);
         }
       }

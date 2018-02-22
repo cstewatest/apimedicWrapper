@@ -24,9 +24,10 @@ let queryParams = (token, additionalParams) => {
 }
 
 exports.sublocations = function(req, res) {
-  redisClient.getAsync("token").then(function(token) {
-    return (token || redisClient.set("token", "abc123"));
+  redisClient.getAsync("authToken").then(function(token) {
+    return (token || new Authenticator().call());
   }).then(function(token) {
+    console.log(token)
     return baseURLFor('sublocations', req.query.locationID) + queryParams(token);
   }).then(function(fullURL) {
     return (new Requester().call('GET', fullURL))

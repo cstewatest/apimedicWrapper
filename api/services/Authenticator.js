@@ -13,12 +13,13 @@ module.exports = function Authenticator() {
   this.call = () => {
     let bearer = API_KEY + ":" + that.computedHashString
     
-    new Requester().call('POST', BASE_URL, {bearer: bearer})
-    .then(function(apiMedicResponse) {
-      let result = apiMedicResponse.responseText;
-      let parsedResult = JSON.parse(result)
-      console.log(parsedResult["Token"])
-    }).catch(err => {({status: err.status, response: err.responseText})
-    })
+    return (
+      new Requester().call('POST', BASE_URL, {bearer: bearer}).then(function(apiMedicResponse) {
+        let result = apiMedicResponse.responseText;
+        let parsedResult = JSON.parse(result)
+        let token = parsedResult["Token"]
+        return token
+      }).catch(err => {({status: err.status, response: err.responseText})})
+    )
   }
 }
