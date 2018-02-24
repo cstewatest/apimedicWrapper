@@ -20,6 +20,7 @@ module.exports = function Authenticator() {
         let parsedResult = JSON.parse(result)
         let token = parsedResult["Token"]
         redisClient.set('authToken', token)
+        redisClient.expire('authToken', 7200)
         return token
       }).catch(err => {({status: err.status, response: err.responseText})})
     )
