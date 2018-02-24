@@ -23,17 +23,20 @@ let queryParams = (token, additionalParams) => {
   return (additionalParams ? defaultQueryParams(token) + additionalParams : defaultQueryParams(token))
 }
 
-exports.sublocations = function(req, res) {
+let retrieveApiMedicResults = (url, res) => {
   redisClient.getAsync("authToken").then(function(token) {
-    console.log("token from cache" + token)
     return (token || new Authenticator().call());
   }).then(function(token) {
-    return baseURLFor('sublocations', req.query.locationID) + queryParams(token);
+    return url + queryParams(token);
   }).then(function(fullURL) {
     return (new Requester().call('GET', fullURL))
   }).then(function(apiMedicResponse) {
-    res.json({status: apiMedicResponse.status, response: apiMedicResponse.responseText})
-  }).catch(err => {res.json({status: err.status, response: err.responseText})})
+    res.status(apiMedicResponse.status).json(apiMedicResponse.responseText)
+  }).catch(err => {res.status(apiMedicResponse.status).json(err.responseText)})
+}
+
+exports.sublocations = function(req, res) {
+  retrieveApiMedicResults(baseURLFor('sublocations', req.query.locationID), res);
 };
 
 exports.sublocation_symptoms = function(req, res) {
