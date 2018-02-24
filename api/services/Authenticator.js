@@ -1,5 +1,6 @@
 let CryptoJS = require("crypto-js")
 let Requester = require('../services/Requester');
+let redisClient = require('../models/redisClient');
 
 const BASE_URL = "https://sandbox-authservice.priaid.ch/login"
 const API_KEY = "christina.v.stewart@gmail.com"
@@ -18,6 +19,7 @@ module.exports = function Authenticator() {
         let result = apiMedicResponse.responseText;
         let parsedResult = JSON.parse(result)
         let token = parsedResult["Token"]
+        redisClient.set('authToken', token)
         return token
       }).catch(err => {({status: err.status, response: err.responseText})})
     )
