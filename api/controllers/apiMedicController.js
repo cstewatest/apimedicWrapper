@@ -50,4 +50,6 @@ exports.additional_symptoms = function(req, res) {
 };
 
 exports.diagnosis = function(req, res) {
+   additionalQueryParams = "&symptoms=" + req.query.symptoms + "&gender=" + req.query.gender + "&year_of_birth=" + req.query.year_of_birth
+   retrieveApiMedicResults(res, baseURLFor('diagnosis'), additionalQueryParams);
 };
