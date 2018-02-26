@@ -9,21 +9,18 @@ module.exports = function urlBuilder(token, opts) {
   this.gender = opts['gender']
   this.year_of_birth = opts['year_of_birth']
   
+  this.defaultQueryParams = "language=en-gb&format=json&token=" + this.token
+  this.additionalQueryParams = "symptoms=" + this.symptoms + "&gender=" + this.gender + "&year_of_birth=" + this.year_of_birth
+  
   this.resourceURLs =  { 
     sublocations: "body/locations/" + this.locationID + "?",
     sublocation_symptoms: "symptoms/" + this.locationID + "/" + this.mwbg + "?",
-    //additional_symptoms: "symptoms/proposed" + additionalQueryParams,
-    //diagnosis: "diagnosis" + additionalQueryParams
+    additional_symptoms: "symptoms/proposed?" + this.additionalQueryParams + "&",
+    diagnosis: "diagnosis?" + this.additionalQueryParams + "&"
   };
-
  
-  let defaultQueryParams = "language=en-gb&format=json&token=" + this.token
- 
-  let additionalQueryParams = "?symptoms=" + JSON.stringify(this.symptoms) + "&gender=" + this.gender + "&year_of_birth=" + this.year_of_birth
-
   this.call = () => {
-    console.log(baseURL + this.resourceURLs[this.type] + defaultQueryParams);
-    return baseURL + this.resourceURLs[this.type] + defaultQueryParams 
+    return baseURL + this.resourceURLs[this.type] + this.defaultQueryParams 
   }
   
 }
