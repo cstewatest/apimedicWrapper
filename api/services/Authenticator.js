@@ -4,7 +4,7 @@ let redisClient = require('../models/redisClient');
 
 const BASE_URL = "https://sandbox-authservice.priaid.ch/login"
 const API_KEY = "christina.v.stewart@gmail.com"
-const SECRET_KEY = "i8QRs56Dfw7WAq32Y"
+const SECRET_KEY = redisClient.getAsync("secretKey").then((k) => {return k})
 
 module.exports = function Authenticator() {  
   let that = this;
