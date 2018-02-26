@@ -2,6 +2,7 @@ let Authenticator = require('../services/Authenticator')
 
 let redisClient = require('../models/redisClient');
 let Requester = require('../services/Requester');
+let urlBuilder = require('../services/urlBuilder');
 
 const baseURL = "https://sandbox-healthservice.priaid.ch/"
 
@@ -23,13 +24,12 @@ let queryParams = (token, additionalParams) => {
   return (additionalParams ? defaultQueryParams(token) + additionalParams : defaultQueryParams(token))
 }
 
-let retrieveApiMedicResults = (res, url, additionalQueryParams) => {
+let retrieveApiMedicResults = (res, urlBuilderOpts) => {
   redisClient.getAsync("authToken").then(function(token) {
     return (token || new Authenticator().call());
   }).then(function(token) {
-    return url + queryParams(token, additionalQueryParams);
+    return (new urlBuilder(token, urlBuilderOpts).call());
   }).then(function(fullURL) {
-    console.log(fullURL)
     return (new Requester().call('GET', fullURL))
   }).then(function(apiMedicResponse) {
     res.status(apiMedicResponse.status).json(apiMedicResponse.responseText)
@@ -37,19 +37,21 @@ let retrieveApiMedicResults = (res, url, additionalQueryParams) => {
 }
 
 exports.sublocations = function(req, res) {
-  retrieveApiMedicResults(res, baseURLFor('sublocations', req.query.locationID));
+  let urlBuilderOpts = {locationID: req.query.locationID, type: 'sublocations'}
+  retrieveApiMedicResults(res, urlBuilderOpts);
 };
 
 exports.sublocation_symptoms = function(req, res) {
-  retrieveApiMedicResults(res, baseURLFor('sublocation_symptoms', req.query.locationID, req.query.mwbg));
+  let urlBuilderOpts = {locationID: req.query.locationID, mwbg: req.query.mwbg, type: 'sublocation_symptoms'}
+  retrieveApiMedicResults(res, urlBuilderOpts);
 };
 
 exports.additional_symptoms = function(req, res) {
-  additionalQueryParams = "&symptoms=" + req.query.symptoms + "&gender=" + req.query.gender + "&year_of_birth=" + req.query.year_of_birth
-  retrieveApiMedicResults(res, baseURLFor('additional_symptoms'), additionalQueryParams);
+  let urlBuilderOpts = {type: 'additional_symptoms', symptoms: req.query.symptoms, gender: req.query.gender, year_of_birth: req.query.year_of_birth}
+  retrieveApiMedicResults(res, urlBuilderOpts);
 };
 
 exports.diagnosis = function(req, res) {
-   additionalQueryParams = "&symptoms=" + req.query.symptoms + "&gender=" + req.query.gender + "&year_of_birth=" + req.query.year_of_birth
-   retrieveApiMedicResults(res, baseURLFor('diagnosis'), additionalQueryParams);
+  let urlBuilderOpts = {type: 'diagnosis', symptoms: req.query.symptoms, gender: req.query.gender, year_of_birth: req.query.year_of_birth}
+   retrieveApiMedicResults(res, urlBuilderOpts);
 };
