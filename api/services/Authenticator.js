@@ -5,14 +5,6 @@ let redisClient = require('../models/redisClient');
 const BASE_URL = "https://sandbox-authservice.priaid.ch/login"
 const API_KEY = "christina.v.stewart@gmail.com"
 
-class AuthError extends Error {
-  constructor(message) {
-    super(message);
-    this.status = 500;
-    this.responseText = message;
-  }
-}
-
 module.exports = function Authenticator() {  
   this.call = () => {
     return (
@@ -31,7 +23,7 @@ module.exports = function Authenticator() {
         return token
       }).catch((err) => {
         console.log(err);
-        throw new AuthError("Error authenticating. Please try again later")
+        throw new Error("Error authenticating. Please try again later.")
       })
     )
   }
