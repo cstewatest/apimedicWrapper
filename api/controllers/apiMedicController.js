@@ -11,7 +11,7 @@ let retrieveApiMedicResults = (res, urlBuilderOpts) => {
   }).then(function(fullURL) {
     return (new Requester().call('GET', fullURL))
   }).then(function(apiMedicResponse) {
-    res.status(apiMedicResponse.status).json(apiMedicResponse.responseText)
+    res.status(apiMedicResponse.status).json(eval(apiMedicResponse.responseText))
   }).catch(err => {res.status(err.status || 500).json(err.responseText || err.message)})
 }
 

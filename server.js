@@ -21,7 +21,8 @@ function rateLimit (req, res, next) {
   })
 }
 
-app.use(rateLimit);
+//put back after upgrading to paid api
+//app.use(rateLimit);
 
 let routes = require('./api/routes/apiMedicRoutes');
 routes(app);
