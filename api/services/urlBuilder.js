@@ -1,5 +1,5 @@
 module.exports = function urlBuilder(token, opts) {  
-  const baseURL = "https://sandbox-healthservice.priaid.ch/";
+  const baseURL = "https://healthservice.priaid.ch/";
   
   this.token = token;
   this.type = opts['type']

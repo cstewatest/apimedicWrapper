@@ -2,8 +2,8 @@ let CryptoJS = require("crypto-js")
 let Requester = require('../services/Requester');
 let redisClient = require('../models/redisClient');
 
-const BASE_URL = "https://sandbox-authservice.priaid.ch/login"
-const API_KEY = "christina.v.stewart@gmail.com"
+const BASE_URL = "https://authservice.priaid.ch/login"
+const API_KEY = "christina_stewart_corp"
 
 module.exports = function Authenticator() {  
   this.call = () => {
