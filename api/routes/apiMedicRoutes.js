@@ -13,4 +13,7 @@ module.exports = function(app) {
 
   app.route('/diagnosis')
     .get(apiMedicWrapper.diagnosis);
+
+  app.route('/diagnosis_info')
+    .get(apiMedicWrapper.diagnosis_info);
 };
