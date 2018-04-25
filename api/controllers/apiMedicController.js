@@ -34,3 +34,8 @@ exports.diagnosis = function(req, res) {
   let urlBuilderOpts = {type: 'diagnosis', symptoms: req.query.symptoms, gender: req.query.gender, year_of_birth: req.query.year_of_birth}
    retrieveApiMedicResults(res, urlBuilderOpts);
 };
+
+exports.diagnosis_info = function(req, res) {
+  let urlBuilderOpts = {type: 'diagnosis_info', diagnosisID: req.query.diagnosisID}
+  retrieveApiMedicResults(res, urlBuilderOpts); 
+};

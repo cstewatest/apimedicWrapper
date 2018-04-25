@@ -8,6 +8,7 @@ module.exports = function urlBuilder(token, opts) {
   this.symptoms = opts['symptoms']
   this.gender = opts['gender']
   this.year_of_birth = opts['year_of_birth']
+  this.diagnosisID = opts['diagnosisID']
   
   this.defaultQueryParams = "language=en-gb&format=json&token=" + this.token
   this.additionalQueryParams = "symptoms=" + this.symptoms + "&gender=" + this.gender + "&year_of_birth=" + this.year_of_birth
@@ -16,7 +17,8 @@ module.exports = function urlBuilder(token, opts) {
     sublocations: "body/locations/" + this.locationID + "?",
     sublocation_symptoms: "symptoms/" + this.locationID + "/" + this.mwbg + "?",
     additional_symptoms: "symptoms/proposed?" + this.additionalQueryParams + "&",
-    diagnosis: "diagnosis?" + this.additionalQueryParams + "&"
+    diagnosis: "diagnosis?" + this.additionalQueryParams + "&",
+    diagnosis_info: "issues/" + this.diagnosisID + "/info?" 
   };
  
   this.call = () => {
